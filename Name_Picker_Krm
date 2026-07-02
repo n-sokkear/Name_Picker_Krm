@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>កម្មវិធីចាប់ឈ្មោះសិស្ស និងបែងចែកក្រុម</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruuy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Kantumruuy Pro', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
+        }
+        .game-card {
+            transition: all 0.3s ease;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        /* ចលនាបង្វិលសម្រាប់ក្រឡុកឈ្មោះ */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinning {
+            animation: spin 0.2s linear infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-800 mb-2">
+                <i class="fa-solid fa-graduation-cap text-indigo-600 mr-2"></i>ប្រព័ន្ធចាប់ឈ្មោះ និងបែងចែកក្រុមសិស្ស
+            </h1>
+            <p class="text-slate-600">បង្កើនបរិយាកាសរីករាយ និងអន្តរកម្មនៅក្នុងថ្នាក់រៀន</p>
+        </header>
+
+        <div class="bg-white rounded-2xl shadow-sm p-6 mb-8 border border-slate-100">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">
+                        <i class="fa-solid fa-users text-emerald-500 mr-1"></i> បញ្ចូលឈ្មោះសិស្ស (ចុះបន្ទាត់ដើម្បីបំបែកឈ្មោះ)
+                    </label>
+                    <textarea id="studentInput" rows="5" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-700" placeholder="សុខា&#10;ពិសិដ្ឋ&#10;ធារី&#10;បុប្ផា"></textarea>
+                </div>
+                <div class="flex flex-col justify-between">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">
+                            <i class="fa-solid fa-layer-group text-blue-500 mr-1"></i> ចំនួនក្រុមដែលចង់បែងចែក
+                        </label>
+                        <input type="number" id="groupCount" min="2" value="4" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none mb-4">
+                    </div>
+                    <button onclick="divideGroups()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition duration-200 cursor-pointer text-center">
+                        <i class="fa-solid fa-dice text-lg mr-2"></i> ចាប់ផ្តើមបែងចែកក្រុមដោយចៃដន្យ
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="groupResultSection" class="hidden mb-8">
+            <h2 class="text-xl font-bold text-slate-800 mb-4"><i class="fa-solid fa-square-poll-horizontal text-indigo-500 mr-2"></i>លទ្ធផលនៃការបែងចែកក្រុម</h2>
+            <div id="groupGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </div>
+
+        <hr class="border-slate-200 my-8">
+
+        <h2 class="text-2xl font-bold text-slate-800 mb-6 text-center">
+            <i class="fa-solid fa-gamepad text-rose-500 mr-2"></i>ទម្រង់ហ្គេមចាប់ឈ្មោះបុគ្គល (ចៃដន្យ)
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div class="game-card bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <span class="p-3 bg-blue-100 rounded-xl text-blue-600 text-xl mr-3"><i class="fa-solid fa-fish"></i></span>
+                        <h3 class="text-lg font-bold text-slate-800">១. ហ្គេមស្ទូចត្រីមហាវិទ្យាល័យ</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-6">បោះសន្ទូចចូលទៅក្នុងបឹងអស្ចារ្យ ដើម្បីស្ទូចរកឈ្មោះសិស្សដែលមានសំណាងម្នាក់។</p>
+                </div>
+                <div class="text-center">
+                    <button onclick="playFish()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2.5 rounded-xl font-semibold transition cursor-pointer">
+                        <i class="fa-solid fa-hook mr-2"></i>បោះសន្ទូច
+                    </button>
+                </div>
+            </div>
+
+            <div class="game-card bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <span class="p-3 bg-amber-100 rounded-xl text-amber-600 text-xl mr-3"><i class="fa-solid fa-spinner"></i></span>
+                        <h3 class="text-lg font-bold text-slate-800">២. កង់វិលក្រឡុកឈ្មោះ</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-6">បង្វិលកង់សំណាងដើម្បីឱ្យឈ្មោះសិស្សទាំងអស់រត់ឆ្លាស់គ្នា មុននឹងឈប់ចំអ្នកសំណាង។</p>
+                </div>
+                <div class="text-center">
+                    <button onclick="playWheel()" class="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-xl font-semibold transition cursor-pointer">
+                        <i class="fa-solid fa-rotate mr-2"></i>ចាប់ផ្តើមបង្វិល
+                    </button>
+                </div>
+            </div>
+
+            <div class="game-card bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <span class="p-3 bg-rose-100 rounded-xl text-rose-600 text-xl mr-3"><i class="fa-solid fa-bullseye"></i></span>
+                        <h3 class="text-lg font-bold text-slate-800">៣. បាញ់ធ្នូចំគោលដៅ</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-6">ព្រួញទេពនឹងហោះទៅបាញ់ចំផ្ទាំងស៊ីបដែលមានឈ្មោះសិស្សលាក់ខ្លួននៅទីនោះ។</p>
+                </div>
+                <div class="text-center">
+                    <button onclick="playArrow()" class="bg-rose-500 hover:bg-rose-600 text-white px-6 py-2.5 rounded-xl font-semibold transition cursor-pointer">
+                        <i class="fa-solid fa-location-arrow mr-2"></i>លែងព្រួញ
+                    </button>
+                </div>
+            </div>
+
+            <div class="game-card bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <span class="p-3 bg-purple-100 rounded-xl text-purple-600 text-xl mr-3"><i class="fa-solid fa-box-open"></i></span>
+                        <h3 class="text-lg font-bold text-slate-800">៤. លាក់ឈ្មោះក្នុងប្រអប់ឆ្នោត</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-6">ឈ្មោះសិស្សទាំងអស់ត្រូវបានបត់ចូលក្នុងប្រអប់អាថ៌កំបាំង រង់ចាំការចាប់ដកយកមកក្រៅ។</p>
+                </div>
+                <div class="text-center">
+                    <button onclick="playLuckyDraw()" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2.5 rounded-xl font-semibold transition cursor-pointer">
+                        <i class="fa-solid fa-hand-sparkles mr-2"></i>លូកចាប់ឆ្នោត
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="resultModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center shadow-2xl border border-slate-100 transform scale-95 transition-all">
+            <div id="gameIconContainer" class="w-24 h-24 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner">
+                </div>
+            <h4 id="gameStatusText" class="text-slate-500 font-medium mb-1">កំពុងស្វែងរក...</h4>
+            <div id="winnerName" class="text-3xl font-black text-indigo-600 my-6 min-h-[40px]"></div>
+            <button onclick="closeModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-3 px-4 rounded-xl transition cursor-pointer">
+                បិទផ្ទាំងនេះ
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // មុខងារទាញយកឈ្មោះសិស្សពី Input Textarea
+        function getStudentList() {
+            const text = document.getElementById('studentInput').value.trim();
+            if (!text) return [];
+            return text.split('\n').map(name => name.trim()).filter(name => name.length > 0);
+        }
+
+        // មុខងារ៖ បែងចែកក្រុម
+        function divideGroups() {
+            const students = getStudentList();
+            const groupCount = parseInt(document.getElementById('groupCount').value);
+            
+            if (students.length === 0) {
+                alert('សូមបញ្ចូលឈ្មោះសិស្សជាមុនសិន!');
+                return;
+            }
+            if (groupCount < 2 || isNaN(groupCount)) {
+                alert('សូមបញ្ចូលចំនួនក្រុមចាប់ពី ២ ឡើងទៅ!');
+                return;
+            }
+
+            // Shuffle algorithm (លាយឈ្មោះចៃដន្យ)
+            const shuffled = [...students].sort(() => Math.random() - 0.5);
+            
+            // បង្កើតអារេនៃក្រុម
+            const groups = Array.from({ length: groupCount }, () => []);
+            shuffled.forEach((student, index) => {
+                groups[index % groupCount].push(student);
+            });
+
+            // បង្ហាញលទ្ធផលលើអេក្រង់
+            const grid = document.getElementById('groupGrid');
+            grid.innerHTML = '';
+            
+            const colors = ['border-blue-500 bg-blue-50/50', 'border-emerald-500 bg-emerald-50/50', 'border-amber-500 bg-amber-50/50', 'border-rose-500 bg-rose-50/50', 'border-purple-500 bg-purple-50/50'];
+
+            groups.forEach((group, i) => {
+                const colorClass = colors[i % colors.length];
+                let listHtml = group.map(name => `<li class="text-slate-700 py-1 border-b border-slate-100 last:border-none"><i class="fa-solid fa-user-small text-slate-400 mr-2 text-xs"></i>${name}</li>`).join('');
+                if(group.length === 0) listHtml = '<li class="text-slate-400 italic">គ្មានសិស្ស</li>';
+
+                grid.innerHTML += `
+                    <div class="bg-white p-4 rounded-xl border-t-4 ${colorClass} shadow-xs">
+                        <h4 class="font-bold text-slate-800 mb-2 flex justify-between">
+                            <span>ក្រុមទី ${i + 1}</span>
+                            <span class="text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">${group.length} នាក់</span>
+                        </h4>
+                        <ul class="text-sm space-y-1">${listHtml}</ul>
+                    </div>
+                `;
+            });
+
+            document.getElementById('groupResultSection').classList.remove('hidden');
+            document.getElementById('groupResultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // មុខងាររួមសម្រាប់បង្ហាញ Modal Animation
+        let intervalId = null;
+        function startBaseAnimation(iconClass, bgClass, actionText, students, callback) {
+            if (students.length === 0) {
+                alert('សូមបញ្ចូលឈ្មោះសិស្សនៅក្នុងប្រអប់ខាងលើសិន!');
+                return;
+            }
+
+            const modal = document.getElementById('resultModal');
+            const iconContainer = document.getElementById('gameIconContainer');
+            const statusText = document.getElementById('gameStatusText');
+            const winnerDisplay = document.getElementById('winnerName');
+
+            // កំណត់ទម្រង់ផ្ទាំងដើម
+            iconContainer.className = `w-24 h-24 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner ${bgClass}`;
+            iconContainer.innerHTML = `<i class="${iconClass}"></i>`;
+            statusText.innerText = actionText;
+            winnerDisplay.innerText = '???';
+            winnerDisplay.classList.remove('text-indigo-600');
+            winnerDisplay.classList.add('text-slate-400');
+
+            modal.classList.remove('hidden');
+
+            // បង្កើតចលនារត់ឈ្មោះលឿនៗ (Effect)
+            let counter = 0;
+            if(iconClass.includes('fa-spinner')) iconContainer.querySelector('i').classList.add('spinning');
+
+            intervalId = setInterval(() => {
+                winnerDisplay.innerText = students[Math.floor(Math.random() * students.length)];
+                counter++;
+                if (counter > 15) {
+                    clearInterval(intervalId);
+                    if(iconContainer.querySelector('i')) iconContainer.querySelector('i').classList.remove('spinning');
+                    
+                    // ជ្រើសរើសអ្នកឈ្នះពិតប្រាកដ
+                    const luckyWinner = students[Math.floor(Math.random() * students.length)];
+                    winnerDisplay.innerText = luckyWinner;
+                    winnerDisplay.classList.remove('text-slate-400');
+                    winnerDisplay.classList.add('text-indigo-600', 'scale-110');
+                    statusText.innerText = '🎉 រកឃើញអ្នកមានសំណាងហើយ! 🎉';
+                    if (callback) callback();
+                }
+            }, 100);
+        }
+
+        function closeModal() {
+            clearInterval(intervalId);
+            document.getElementById('resultModal').classList.add('hidden');
+        }
+
+        // --- ហ្គេមទាំង ៤ បែប ---
+        function playFish() {
+            const students = getStudentList();
+            startBaseAnimation('fa-solid fa-fish text-blue-600', 'bg-blue-100', '🎣 កំពុងបោះសន្ទូចស្ទូចត្រីឈ្មោះ...', students);
+        }
+
+        function playWheel() {
+            const students = getStudentList();
+            startBaseAnimation('fa-solid fa-spinner text-amber-600', 'bg-amber-100', '🔄 កង់សំណាងកំពុងក្រឡុកវិល...', students);
+        }
+
+        function playArrow() {
+            const students = getStudentList();
+            startBaseAnimation('fa-solid fa-bullseye text-rose-600', 'bg-rose-100', '🏹 ព្រួញកំពុងហោះទៅរកផ្ទាំងស៊ីប...', students);
+        }
+
+        function playLuckyDraw() {
+            const students = getStudentList();
+            startBaseAnimation('fa-solid fa-box-open text-purple-600', 'bg-purple-100', '🗳️ កំពុងលូកដៃចាប់ឆ្នោតក្នុងប្រអប់...', students);
+        }
+    </script>
+</body>
+</html>
